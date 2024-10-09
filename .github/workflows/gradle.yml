@@ -45,7 +45,7 @@ jobs:
         changeCreationTimeOut: '3600'
         abortOnChangeCreationFailure: true
         abortOnChangeStepTimeout: true
-        deployment-gate: '{"environment":"deployment-gate-fake","jobName":"deploy"}'
+        deployment-gate: '{"environment":"deployment-gate-fake","jobName":"create"}'
 
   deploy:
     name: deploy
