@@ -31,6 +31,6 @@ jobs:
     steps:
       - name: deploy
         run: |
-          echo "deploying.... ."   
+          echo "deploying....."   
           # exit 1
 
