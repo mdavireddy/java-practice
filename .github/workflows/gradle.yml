@@ -7,53 +7,29 @@ env:
   ACTIONS_STEP_DEBUG: true
 
 jobs:
-  change:
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
-    - name: Change Request Attributes
-      uses: ServiceNow/servicenow-devops-change@v4.0.0
-      id: create
-      with:
-        devops-integration-token: ${{ secrets.SN_DEVOPS_INTEGRATION_TOKEN }}
-        instance-url: ${{ secrets.SN_INSTANCE_URL }}
-        tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
-        context-github: ${{ toJSON(github) }}
-        job-name: ${{ github.job }}
-        change-request: |
-          {
-            "setCloseCode":"true",
-            "autoCloseChange":true,
-            "attributes":
-              { 
-                "devops_change": true,
-                "short_description":"Automated Software Deployments After Onboard asdf triggered",
-                "type":"Routine",
-                "category": "DevOps",
-                "u_subcategory": "NAVigator",
-                "u_is_there_dr_impact": "No",
-                "u_action_requested": "Application Update / Maintenance",
-                "description":"NAVigator Test Deployment",
-                "implementation_plan":"Software update is tested and results can be found in Test Summaries Tab; When the change is approved the implementation happens automated by the CICD pipeline within the change planned start and end time window.",
-                "change_plan":"Test change plan",
-                "u_user_impact":"Test User Impact",
-                "backout_plan":"When software fails in production, the previous software release will be re-deployed.",
-                "test_plan":"Testing if the software was successfully deployed"
-              }
-          }
-        interval: '100'
-        timeout: '3600'
-        changeCreationTimeOut: '3600'
-        abortOnChangeCreationFailure: true
-        abortOnChangeStepTimeout: true
-        deployment-gate: '{"environment":"deployment-gate-fake","jobName":"create"}'
-
+      - name: Build
+        run: |
+          echo "Building....."
+      
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main1' }}
+    steps:
+      - name: This step only runs if the push is to main
+        run: echo "This job runs only on pushes to main branch."
+        
   deploy:
     name: deploy
     runs-on: ubuntu-latest
-    needs: change
-    environment: deployment-gate-fake
+    needs: build
     steps:
-      - name: Get Web Deploy Package Path
+      - name: deploy
         run: |
-          echo "Deployed"
+          echo "deploying....."       
 
