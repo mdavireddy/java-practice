@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Build
         run: |
-          echo "Building....."
+          echo "Building.. ..."
       
   test:
     name: Test
